@@ -57,6 +57,15 @@ const matchSchema = z.object({
   listing_id: z.number().int().positive()
 });
 
+const aiPredictSchema = z.object({
+  Harvest_Quantity_kg: z.number().positive(),
+  Distance_to_Warehouse_km: z.number().positive(),
+  Travel_Time_hr: z.number().positive(),
+  Temperature_C: z.number(),
+  Humidity_pct: z.number().min(0).max(100),
+  Demand_Index: z.number().positive()
+});
+
 module.exports = {
   validate,
   schemas: {
@@ -66,6 +75,7 @@ module.exports = {
     preorderSchema,
     bookingSchema,
     bookingStatusSchema,
-    matchSchema
+    matchSchema,
+    aiPredictSchema
   }
 };

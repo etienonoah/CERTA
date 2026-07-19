@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { errorHandler, catchAsync } = require('./middleware/errorHandler');
@@ -182,6 +183,19 @@ app.post('/matches', validate(schemas.matchSchema), catchAsync(async (req, res) 
     id: matchId.id || matchId, 
     message: 'Match generated',
     ai_data_id: aiMatchData._id
+  });
+}));
+
+// 9. AI Prediction Endpoint (Spoilage Risk & Farmer Clustering)
+app.post('/ai/predict', authMiddleware, validate(schemas.aiPredictSchema), catchAsync(async (req, res) => {
+  // Call the external Python microservice
+  const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:5000/predict';
+  
+  const aiResponse = await axios.post(aiServiceUrl, req.body);
+  
+  res.json({
+    message: 'AI prediction successful',
+    prediction: aiResponse.data
   });
 }));
 
