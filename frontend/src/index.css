@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Premium Dark/Emerald Palette */
+  --certa-primary: #059669;      /* Emerald 600 */
+  --certa-primary-hover: #047857;/* Emerald 700 */
+  --certa-support: #34D399;      /* Emerald 400 */
+  --certa-accent:  #F59E0B;      /* Amber 500 */
+  --certa-text:    #0F172A;      /* Slate 900 */
+  --certa-muted:   #64748B;      /* Slate 500 */
+  --certa-surface-light: #F8FAFC;/* Slate 50 */
+  --certa-bg-app:  #F1F5F9;      /* Slate 100 */
+  --certa-border:  #E2E8F0;      /* Slate 200 */
+
+  /* Status Pills - Translucent & Vibrant */
+  --certa-pill-pending-bg: rgba(245, 158, 11, 0.15);
+  --certa-pill-pending-fg: #D97706;
+  --certa-pill-confirmed-bg: rgba(16, 185, 129, 0.15);
+  --certa-pill-confirmed-fg: #059669;
+  --certa-pill-fulfilled-bg: rgba(5, 150, 105, 0.9);
+  --certa-pill-fulfilled-fg: #FFFFFF;
+  --certa-pill-neutral-bg: rgba(100, 116, 139, 0.1);
+  --certa-pill-neutral-fg: #64748B;
+
+  --certa-font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+  font-family: var(--certa-font);
+  background: var(--certa-bg-app);
+  margin: 0;
+  padding: 0;
+  color: var(--certa-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Premium Layout ---------- */
+.app-container {
+  max-width: 600px; /* Constrain max width for mobile-first premium feel */
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--certa-surface-light);
+  box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.screenview {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+/* ---------- Component: TopBar ---------- */
+.topbar { 
+  display:flex; 
+  align-items:center; 
+  gap: 12px; 
+  padding: 24px 24px 16px; 
+  position: sticky;
+  top: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+.logo-icon {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--certa-support), var(--certa-primary));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+}
+.logo-icon span { font-weight:700; font-size:16px; color: #fff; }
+.logo-text { font-weight:700; font-size:20px; color: var(--certa-text); letter-spacing: -0.5px; }
+.screen-title { font-weight:600; font-size:18px; color: var(--certa-text); letter-spacing: -0.3px; }
+
+/* ---------- Component: Card ---------- */
+.content { padding: 16px 24px 80px; flex:1; overflow-y: auto; } 
+.card { 
+  background: #FFFFFF; 
+  border-radius: 20px; 
+  padding: 20px; 
+  margin-bottom: 16px; 
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0,0,0,0.02);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+.label { font-size: 13px; font-weight: 500; color: var(--certa-muted); margin-bottom: 6px; }
+.value { font-size: 16px; font-weight: 600; color: var(--certa-text); }
+.row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+
+/* ---------- Component: StatusPill ---------- */
+.pill { 
+  display:inline-block; 
+  font-size: 12px; 
+  font-weight: 600; 
+  padding: 6px 12px; 
+  border-radius: 20px; 
+  margin-top: 8px; 
+}
+.pill-pending    { background: var(--certa-pill-pending-bg);    color: var(--certa-pill-pending-fg); }
+.pill-confirmed  { background: var(--certa-pill-confirmed-bg);  color: var(--certa-pill-confirmed-fg); }
+.pill-fulfilled  { background: var(--certa-pill-fulfilled-bg);  color: var(--certa-pill-fulfilled-fg); }
+.pill-neutral    { background: var(--certa-pill-neutral-bg);    color: var(--certa-pill-neutral-fg); }
+
+/* ---------- Component: Button ---------- */
+.btn {
+  background: var(--certa-primary); color: #fff;
+  border:none; border-radius:14px; padding:16px 20px;
+  font-family: var(--certa-font); font-weight:600; font-size:15px;
+  width:100%; cursor:pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+.btn:hover { background: var(--certa-primary-hover); }
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 3px solid var(--certa-support); outline-offset: 2px; }
+
+.btn-ghost {
+  background: transparent; color: var(--certa-primary);
+  border: 2px solid var(--certa-border); border-radius:14px;
+  padding:14px 20px; font-family: var(--certa-font);
+  font-weight:600; font-size:14px; width:100%; cursor:pointer;
+  transition: all 0.2s ease;
+}
+.btn-ghost:hover { border-color: var(--certa-primary); background: rgba(5, 150, 105, 0.05); }
+.btn-ghost:active { transform: scale(0.98); }
+
+/* ---------- Component: MatchListItem ---------- */
+.match-item { 
+  display:flex; align-items:center; gap:14px; padding:16px; 
+  background: #FFFFFF; border-radius:16px; margin-bottom:12px; 
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+}
+.match-item:hover { transform: translateX(4px); box-shadow: var(--card-shadow-hover); }
+.avatar {
+  width: 44px; height: 44px; border-radius: 12px; 
+  background: linear-gradient(135deg, var(--certa-surface-light), var(--certa-border));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:15px; color: var(--certa-primary); flex-shrink:0;
+}
+
+/* ---------- Component: NavBar (Glassmorphic) ---------- */
+.navbar { 
+  display:flex; 
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 600px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.navitem { 
+  flex:1; text-align:center; padding: 16px 4px; 
+  font-size: 11px; font-weight: 500; color: var(--certa-muted); 
+  cursor:pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  transition: color 0.2s ease;
+}
+.navitem svg { opacity: 0.6; transition: all 0.2s ease; }
+.navitem.active { color: var(--certa-primary); font-weight: 600; }
+.navitem.active svg { opacity: 1; stroke: var(--certa-primary); transform: translateY(-2px); }
+
+/* ---------- Component: EmptyState / BlockedState ---------- */
+.state-icon { 
+  width: 64px; height: 64px; border-radius: 20px; 
+  background: var(--certa-surface-light); 
+  display:flex; align-items:center; justify-content:center; margin-bottom:20px; 
+  color: var(--certa-primary);
+}
+.headline { font-weight:700; font-size:20px; color: var(--certa-text); margin-bottom:10px; letter-spacing: -0.5px; }
+.body-text { font-size:15px; color: var(--certa-muted); line-height:1.6; margin-bottom:8px; }
+.sub-text { font-size:13px; color: var(--certa-muted); line-height:1.5; margin-bottom:24px; opacity: 0.8; }
+
+/* ---------- Component: AltOptionItem ---------- */
+.alt-item { 
+  display:flex; align-items:center; gap:12px; padding:14px; 
+  background: #FFFFFF; border-radius:16px; margin-bottom:10px; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  border: 1px solid var(--certa-border);
+}
+.alt-icon { 
+  width:36px; height:36px; border-radius:10px; 
+  background: var(--certa-surface-light); 
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; 
+}
+.alt-icon span { font-weight:600; font-size:12px; color: var(--certa-text); }
+.alt-value { font-weight:600; font-size:14px; color: var(--certa-text); }
+.alt-label { font-size:12px; color: var(--certa-muted); margin-top: 2px; }
+.mini-btn {
+  font-weight:600; font-size:12px; color: var(--certa-primary);
+  background: rgba(5, 150, 105, 0.1); border:none; border-radius:10px;
+  padding:8px 14px; cursor:pointer; white-space:nowrap; font-family: var(--certa-font);
+  transition: all 0.2s ease;
+}
+.mini-btn:hover { background: rgba(5, 150, 105, 0.15); }
+.mini-btn:active { transform: scale(0.95); }
