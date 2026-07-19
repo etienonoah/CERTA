@@ -61,7 +61,9 @@ Verify the API is running.
 ---
 
 ## 3. Farmers
-Register a new farmer in the system.
+Register a new farmer in the system or fetch all farmers.
+
+### Create Farmer
 - **Endpoint:** `POST /farmers`
 - **Request Body:**
   ```json
@@ -78,10 +80,26 @@ Register a new farmer in the system.
   }
   ```
 
+### Get All Farmers
+- **Endpoint:** `GET /farmers`
+- **Success Response (200):**
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "contact_info": "john@example.com",
+      "created_at": "2026-07-19T14:00:00.000Z"
+    }
+  ]
+  ```
+
 ---
 
 ## 4. Listings
-Create a new crop listing for a farmer.
+Create a new crop listing for a farmer or fetch all listings.
+
+### Create Listing (Protected)
 - **Requires Auth:** Yes (Header: `Authorization: Bearer <token>`)
 - **Endpoint:** `POST /listings`
 - **Request Body:**
@@ -101,10 +119,28 @@ Create a new crop listing for a farmer.
   }
   ```
 
+### Get All Listings
+- **Endpoint:** `GET /listings`
+- **Success Response (200):**
+  ```json
+  [
+    {
+      "id": 15,
+      "farmer_id": 1,
+      "crop_type": "Wheat",
+      "quantity": 500,
+      "estimated_harvest_window": "August 2026",
+      "created_at": "2026-07-19T14:00:00.000Z"
+    }
+  ]
+  ```
+
 ---
 
 ## 5. Warehouses
-Register a new storage warehouse.
+Register a new storage warehouse or fetch all warehouses.
+
+### Create Warehouse
 - **Endpoint:** `POST /warehouses`
 - **Request Body:**
   ```json
@@ -120,6 +156,21 @@ Register a new storage warehouse.
     "id": 3,
     "message": "Warehouse created"
   }
+  ```
+
+### Get All Warehouses
+- **Endpoint:** `GET /warehouses`
+- **Success Response (200):**
+  ```json
+  [
+    {
+      "id": 3,
+      "name": "Central Storage",
+      "location": "Springfield",
+      "capacity": 10000,
+      "created_at": "2026-07-19T14:00:00.000Z"
+    }
+  ]
   ```
 
 ---
@@ -218,5 +269,34 @@ Generate an AI-driven match between a listing and a buyer.
     "id": 8,
     "message": "Match generated",
     "ai_data_id": "64b7f8e..."
+  }
+  ```
+
+---
+
+## 11. AI Prediction (Spoilage Risk)
+Predict crop spoilage risk and cluster farmers based on metrics using the Python ML Microservice.
+- **Requires Auth:** Yes (Header: `Authorization: Bearer <token>`)
+- **Endpoint:** `POST /ai/predict`
+- **Request Body:**
+  ```json
+  {
+    "Harvest_Quantity_kg": 2500,
+    "Distance_to_Warehouse_km": 45.5,
+    "Travel_Time_hr": 2.5,
+    "Temperature_C": 35.2,
+    "Humidity_pct": 80.0,
+    "Demand_Index": 7.5
+  }
+  ```
+- **Success Response (200):**
+  ```json
+  {
+    "message": "AI prediction successful",
+    "prediction": {
+      "Spoilage_Risk": "High",
+      "Farmer_Group": 1,
+      "_mode": "real"
+    }
   }
   ```

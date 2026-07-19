@@ -76,6 +76,11 @@ app.post('/farmers', validate(schemas.farmerSchema), catchAsync(async (req, res)
   res.status(201).json({ id: id.id || id, message: 'Farmer created' });
 }));
 
+app.get('/farmers', catchAsync(async (req, res) => {
+  const farmers = await knex('farmers').select('*');
+  res.json(farmers);
+}));
+
 // 2. Listings (Protected)
 app.post('/listings', authMiddleware, validate(schemas.listingSchema), catchAsync(async (req, res) => {
   const { farmer_id, crop_type, quantity, estimated_harvest_window } = req.body;
@@ -85,11 +90,21 @@ app.post('/listings', authMiddleware, validate(schemas.listingSchema), catchAsyn
   res.status(201).json({ id: id.id || id, message: 'Listing created' });
 }));
 
+app.get('/listings', catchAsync(async (req, res) => {
+  const listings = await knex('listings').select('*');
+  res.json(listings);
+}));
+
 // 3. Warehouses
 app.post('/warehouses', validate(schemas.warehouseSchema), catchAsync(async (req, res) => {
   const { name, location, capacity } = req.body;
   const [id] = await knex('warehouses').insert({ name, location, capacity }).returning('id');
   res.status(201).json({ id: id.id || id, message: 'Warehouse created' });
+}));
+
+app.get('/warehouses', catchAsync(async (req, res) => {
+  const warehouses = await knex('warehouses').select('*');
+  res.json(warehouses);
 }));
 
 // 4. Warehouse Availability
