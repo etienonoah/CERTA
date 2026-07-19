@@ -3,9 +3,51 @@
 **Base URL:** `http://localhost:3001` (For local development)
 **Headers required for POST/PUT:** `Content-Type: application/json`
 
+> **Note on Authentication:** Some endpoints are protected and require a valid JWT token. To access these, include the following header in your request:
+> `Authorization: Bearer <your_jwt_token>`
+
 ---
 
-## 1. System Health
+## 1. Authentication
+Register a new user account or log in to receive a JWT token.
+
+### Register
+- **Endpoint:** `POST /register`
+- **Request Body:**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "securepassword"
+  }
+  ```
+- **Success Response (201):**
+  ```json
+  {
+    "id": 1,
+    "message": "User registered successfully"
+  }
+  ```
+
+### Login
+- **Endpoint:** `POST /login`
+- **Request Body:**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "securepassword"
+  }
+  ```
+- **Success Response (200):**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "message": "Login successful"
+  }
+  ```
+
+---
+
+## 2. System Health
 Verify the API is running.
 - **Endpoint:** `GET /health`
 - **Response:**
@@ -18,7 +60,7 @@ Verify the API is running.
 
 ---
 
-## 2. Farmers
+## 3. Farmers
 Register a new farmer in the system.
 - **Endpoint:** `POST /farmers`
 - **Request Body:**
@@ -38,8 +80,9 @@ Register a new farmer in the system.
 
 ---
 
-## 3. Listings
+## 4. Listings
 Create a new crop listing for a farmer.
+- **Requires Auth:** Yes (Header: `Authorization: Bearer <token>`)
 - **Endpoint:** `POST /listings`
 - **Request Body:**
   ```json
@@ -60,7 +103,7 @@ Create a new crop listing for a farmer.
 
 ---
 
-## 4. Warehouses
+## 5. Warehouses
 Register a new storage warehouse.
 - **Endpoint:** `POST /warehouses`
 - **Request Body:**
@@ -81,7 +124,7 @@ Register a new storage warehouse.
 
 ---
 
-## 5. Warehouse Availability
+## 6. Warehouse Availability
 Check how much capacity a specific warehouse has remaining.
 - **Endpoint:** `GET /warehouses/:id/availability`
 - **Request Body:** None
@@ -96,8 +139,9 @@ Check how much capacity a specific warehouse has remaining.
 
 ---
 
-## 6. Pre-orders (Consumer Reservation)
+## 7. Pre-orders (Consumer Reservation)
 Reserve a crop listing for a consumer.
+- **Requires Auth:** Yes (Header: `Authorization: Bearer <token>`)
 - **Endpoint:** `POST /preorders`
 - **Request Body:**
   ```json
@@ -117,7 +161,7 @@ Reserve a crop listing for a consumer.
 
 ---
 
-## 7. Warehouse Bookings
+## 8. Warehouse Bookings
 Request space in a warehouse for a specific listing.
 - **Endpoint:** `POST /bookings`
 - **Request Body:**
@@ -138,7 +182,7 @@ Request space in a warehouse for a specific listing.
 
 ---
 
-## 8. Update Booking Status
+## 9. Update Booking Status
 Update the status of an existing warehouse booking.
 - **Endpoint:** `PUT /bookings/:id/status`
 - **Request Body:**
@@ -159,7 +203,7 @@ Update the status of an existing warehouse booking.
 
 ---
 
-## 9. Generate AI Match
+## 10. Generate AI Match
 Generate an AI-driven match between a listing and a buyer.
 - **Endpoint:** `POST /matches`
 - **Request Body:**
