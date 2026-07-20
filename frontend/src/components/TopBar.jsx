@@ -13,7 +13,7 @@ export default function TopBar({ title }) {
         <div className="logo-icon">
           <span>C</span>
         </div>
-        <div className="screen-title">{title}</div>
+        <h1 className="screen-title" style={{ margin: 0 }}>{title}</h1>
       </div>
       
       {!isDashboard && (
