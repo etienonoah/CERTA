@@ -33,15 +33,35 @@
 body {
   font-family: var(--certa-font);
   background: var(--certa-bg-app);
+  background-image: radial-gradient(circle at 50% 0%, rgba(5, 150, 105, 0.05) 0%, transparent 60%);
   margin: 0;
   padding: 0;
   color: var(--certa-text);
   -webkit-font-smoothing: antialiased;
+  /* Transitions & Animation */
+  --certa-transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --certa-transition-smooth: all 0.3s ease;
 }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ---------- Premium Layout ---------- */
@@ -50,17 +70,20 @@ body {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--certa-surface-light);
-  box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  box-shadow: 0 0 60px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   position: relative;
+  border-left: 1px solid rgba(255,255,255,0.5);
+  border-right: 1px solid rgba(255,255,255,0.5);
 }
 
 .screenview {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  height: 100%;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease-out;
 }
 
 /* ---------- Component: TopBar ---------- */
@@ -88,19 +111,25 @@ body {
 .screen-title { font-weight:600; font-size:18px; color: var(--certa-text); letter-spacing: -0.3px; }
 
 /* ---------- Component: Card ---------- */
-.content { padding: 16px 24px 80px; flex:1; overflow-y: auto; } 
+.content { 
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+} 
 .card { 
   background: #FFFFFF; 
-  border-radius: 20px; 
+  border-radius: 16px; 
   padding: 20px; 
   margin-bottom: 16px; 
-  box-shadow: var(--card-shadow);
-  border: 1px solid rgba(0,0,0,0.02);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid var(--certa-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  transition: var(--certa-transition-bounce);
 }
 .card:hover {
-  box-shadow: var(--card-shadow-hover);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+  border-color: rgba(5, 150, 105, 0.2);
 }
 .label { font-size: 13px; font-weight: 500; color: var(--certa-muted); margin-bottom: 6px; }
 .value { font-size: 16px; font-weight: 600; color: var(--certa-text); }
@@ -122,26 +151,46 @@ body {
 
 /* ---------- Component: Button ---------- */
 .btn {
-  background: var(--certa-primary); color: #fff;
-  border:none; border-radius:14px; padding:16px 20px;
-  font-family: var(--certa-font); font-weight:600; font-size:15px;
-  width:100%; cursor:pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  background: var(--certa-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  transition: var(--certa-transition-smooth);
   box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
 }
-.btn:hover { background: var(--certa-primary-hover); }
-.btn:active { transform: scale(0.98); }
-.btn:focus-visible { outline: 3px solid var(--certa-support); outline-offset: 2px; }
+.btn:hover {
+  background: #047857; /* darker emerald */
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(2px) scale(0.98);
+}
 
 .btn-ghost {
-  background: transparent; color: var(--certa-primary);
-  border: 2px solid var(--certa-border); border-radius:14px;
-  padding:14px 20px; font-family: var(--certa-font);
-  font-weight:600; font-size:14px; width:100%; cursor:pointer;
-  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--certa-primary);
+  border: 1px solid var(--certa-border);
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  transition: var(--certa-transition-smooth);
 }
-.btn-ghost:hover { border-color: var(--certa-primary); background: rgba(5, 150, 105, 0.05); }
-.btn-ghost:active { transform: scale(0.98); }
+.btn-ghost:hover {
+  background: rgba(5, 150, 105, 0.05);
+  border-color: var(--certa-primary);
+}
+.btn-ghost:active {
+  transform: translateY(2px) scale(0.98);
+}
 
 /* ---------- Component: MatchListItem ---------- */
 .match-item { 
@@ -216,3 +265,19 @@ body {
 }
 .mini-btn:hover { background: rgba(5, 150, 105, 0.15); }
 .mini-btn:active { transform: scale(0.95); }
+
+/* ---------- Inputs & Forms ---------- */
+input {
+  transition: all 0.3s ease;
+  outline: none;
+  font-family: var(--certa-font);
+}
+input:focus {
+  border-color: var(--certa-support) !important;
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15) !important;
+  transform: translateY(-1px);
+}
+input::placeholder {
+  color: var(--certa-muted);
+  opacity: 0.7;
+}

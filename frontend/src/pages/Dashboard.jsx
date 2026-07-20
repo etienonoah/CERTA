@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TopBar from '../components/TopBar';
 import Card from '../components/Card';
 import StatusPill from '../components/StatusPill';
-import { User, Plus, Package, Loader2, RefreshCcw } from 'lucide-react';
+import { User, Plus, Package, Loader2, LogOut } from 'lucide-react';
 import api from '../api';
 
 export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   
   // Listing Form state
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ crop_type: '', quantity: '', estimated_harvest_window: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  // Profile Form state
-  const [profileData, setProfileData] = useState({ name: '', contact_info: '' });
-  const [submittingProfile, setSubmittingProfile] = useState(false);
-
   const fetchData = async () => {
     setLoading(true);
     try {
       const farmersRes = await api.get('/farmers');
-      if (farmersRes.data && farmersRes.data.length > 0) {
-        setProfile(farmersRes.data[0]); // Use the first real farmer for now
-        
-        // Fetch listings only if a profile exists
+      // For demo, we are just picking the first farmer, or if we passed email in localstorage we could filter
+      const userEmail = localStorage.getItem('userEmail');
+      const userProfile = farmersRes.data?.find(f => f.contact_info === userEmail) || farmersRes.data?.[0];
+      
+      if (userProfile) {
+        setProfile(userProfile);
         const listingsRes = await api.get('/listings');
-        setListings(listingsRes.data || []);
+        // Filter listings for this farmer if backend doesn't do it automatically
+        const userListings = (listingsRes.data || []).filter(l => l.farmer_id === userProfile.id);
+        setListings(userListings);
       } else {
-        setProfile(null);
-        setListings([]);
+        setProfile({ name: 'Farmer', contact_info: userEmail }); // Fallback
       }
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
@@ -41,27 +42,23 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleCreateProfile = async (e) => {
-    e.preventDefault();
-    setSubmittingProfile(true);
-    try {
-      await api.post('/farmers', profileData);
-      setProfileData({ name: '', contact_info: '' });
-      fetchData(); // Reload to get the newly created profile
-    } catch (err) {
-      console.error('Error creating profile:', err);
-      alert('Failed to create profile.');
-    } finally {
-      setSubmittingProfile(false);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth');
+      return;
     }
+    fetchData();
+  }, [navigate]);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    navigate('/auth');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!profile) return;
+    if (!profile || !profile.id) return;
     setSubmitting(true);
     try {
       const payload = {
@@ -86,7 +83,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="screenview">
-        <TopBar title="User Dashboard" />
+        <TopBar title="Certa" />
         <div className="content" style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
           <Loader2 size={32} color="var(--certa-primary)" style={{ animation: 'spin 1s linear infinite' }} />
         </div>
@@ -94,61 +91,26 @@ export default function Dashboard() {
     );
   }
 
-  // If no profile exists, show the Create Profile form
-  if (!profile) {
-    return (
-      <div className="screenview">
-        <TopBar title="User Dashboard" />
-        <div className="content">
-          <div style={{ textAlign: 'center', marginBottom: '24px', padding: '20px 0' }}>
-            <div className="state-icon" style={{ margin: '0 auto 16px', background: 'rgba(5, 150, 105, 0.1)', color: 'var(--certa-primary)' }}>
-              <User size={32} />
-            </div>
-            <div className="headline">Welcome to Certa</div>
-            <div className="body-text">Please create a real farmer profile to start adding listings and managing your dashboard.</div>
-          </div>
-
-          <Card style={{ border: '2px solid var(--certa-primary)' }}>
-            <div className="label" style={{ marginBottom: '16px', color: 'var(--certa-primary)', fontWeight: 600 }}>Create Profile</div>
-            <form onSubmit={handleCreateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <input 
-                required
-                placeholder="Full Name" 
-                value={profileData.name}
-                onChange={e => setProfileData({...profileData, name: e.target.value})}
-                style={{ padding: '12px', borderRadius: '10px', border: '1px solid var(--certa-border)', fontSize: '14px' }}
-              />
-              <input 
-                required
-                type="email"
-                placeholder="Contact Email" 
-                value={profileData.contact_info}
-                onChange={e => setProfileData({...profileData, contact_info: e.target.value})}
-                style={{ padding: '12px', borderRadius: '10px', border: '1px solid var(--certa-border)', fontSize: '14px' }}
-              />
-              <button type="submit" className="btn" disabled={submittingProfile} style={{ marginTop: '8px', display: 'flex', justifyContent: 'center' }}>
-                {submittingProfile ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : 'Create Profile'}
-              </button>
-            </form>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="screenview">
-      <TopBar title="Dashboard" />
+      <TopBar title="Certa" />
       <div className="content">
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', padding: '0 8px' }}>
           <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: 'var(--certa-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
             <User size={32} />
           </div>
-          <div>
-            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--certa-text)' }}>{profile.name}</div>
-            <div style={{ fontSize: '14px', color: 'var(--certa-muted)' }}>{profile.contact_info}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--certa-text)' }}>{profile?.name}</div>
+            <div style={{ fontSize: '14px', color: 'var(--certa-muted)' }}>{profile?.contact_info}</div>
           </div>
+          <button 
+            onClick={handleSignOut}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: '1px solid var(--certa-border)', borderRadius: '12px', padding: '10px', color: 'var(--certa-muted)', cursor: 'pointer' }}
+            title="Sign Out"
+          >
+            <LogOut size={18} />
+          </button>
         </div>
 
         <div className="row" style={{ marginBottom: '16px' }}>
